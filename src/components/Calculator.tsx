@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Display from './Display';
 import Button from './Button';
 import './Calculator.css';
@@ -84,6 +84,44 @@ const Calculator: React.FC = () => {
         return secondValue;
     }
   };
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent): void => {
+      const { key } = event;
+      
+      if (key >= '0' && key <= '9') {
+        inputNumber(parseInt(key));
+      } else if (key === '.') {
+        inputDecimal();
+      } else if (key === '+') {
+        performOperation('+');
+      } else if (key === '-') {
+        performOperation('-');
+      } else if (key === '*') {
+        performOperation('×');
+      } else if (key === '/') {
+        event.preventDefault();
+        performOperation('÷');
+      } else if (key === 'Enter' || key === '=') {
+        performOperation('=');
+      } else if (key === 'Escape' || key === 'c' || key === 'C') {
+        clear();
+      } else if (key === '%') {
+        percentage();
+      } else if (key === 'Backspace') {
+        if (displayValue.length > 1) {
+          setDisplayValue(displayValue.slice(0, -1));
+        } else {
+          setDisplayValue('0');
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [displayValue, inputNumber, inputDecimal, performOperation, clear, percentage]);
 
   const buttons: ButtonConfig[] = [
     { value: displayValue === '0' ? 'AC' : 'C', type: 'function', handler: clear },
