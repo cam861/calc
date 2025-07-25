@@ -1,7 +1,11 @@
 import React from 'react';
 import './Display.css';
 
-const Display = ({ value }) => {
+interface DisplayProps {
+  value: string;
+}
+
+const Display: React.FC<DisplayProps> = ({ value }) => {
   const formattedValue = parseFloat(value).toLocaleString('en-US', {
     maximumFractionDigits: 9,
     useGrouping: true

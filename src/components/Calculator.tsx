@@ -3,13 +3,22 @@ import Display from './Display';
 import Button from './Button';
 import './Calculator.css';
 
-const Calculator = () => {
-  const [displayValue, setDisplayValue] = useState('0');
-  const [previousValue, setPreviousValue] = useState(null);
-  const [operation, setOperation] = useState(null);
-  const [waitingForNewValue, setWaitingForNewValue] = useState(false);
+type OperationType = '+' | '-' | '×' | '÷' | '=' | null;
 
-  const inputNumber = (num) => {
+interface ButtonConfig {
+  value: string;
+  type: 'function' | 'operator' | 'number';
+  wide?: boolean;
+  handler: () => void;
+}
+
+const Calculator: React.FC = () => {
+  const [displayValue, setDisplayValue] = useState<string>('0');
+  const [previousValue, setPreviousValue] = useState<number | null>(null);
+  const [operation, setOperation] = useState<OperationType>(null);
+  const [waitingForNewValue, setWaitingForNewValue] = useState<boolean>(false);
+
+  const inputNumber = (num: number): void => {
     if (waitingForNewValue) {
       setDisplayValue(String(num));
       setWaitingForNewValue(false);
@@ -18,7 +27,7 @@ const Calculator = () => {
     }
   };
 
-  const inputDecimal = () => {
+  const inputDecimal = (): void => {
     if (waitingForNewValue) {
       setDisplayValue('0.');
       setWaitingForNewValue(false);
@@ -27,22 +36,22 @@ const Calculator = () => {
     }
   };
 
-  const clear = () => {
+  const clear = (): void => {
     setDisplayValue('0');
     setPreviousValue(null);
     setOperation(null);
     setWaitingForNewValue(false);
   };
 
-  const toggleSign = () => {
+  const toggleSign = (): void => {
     setDisplayValue(String(parseFloat(displayValue) * -1));
   };
 
-  const percentage = () => {
+  const percentage = (): void => {
     setDisplayValue(String(parseFloat(displayValue) / 100));
   };
 
-  const performOperation = (nextOperation) => {
+  const performOperation = (nextOperation: OperationType): void => {
     const inputValue = parseFloat(displayValue);
 
     if (previousValue === null) {
@@ -59,7 +68,7 @@ const Calculator = () => {
     setOperation(nextOperation);
   };
 
-  const calculate = (firstValue, secondValue, operation) => {
+  const calculate = (firstValue: number, secondValue: number, operation: OperationType): number => {
     switch (operation) {
       case '+':
         return firstValue + secondValue;
@@ -76,7 +85,7 @@ const Calculator = () => {
     }
   };
 
-  const buttons = [
+  const buttons: ButtonConfig[] = [
     { value: displayValue === '0' ? 'AC' : 'C', type: 'function', handler: clear },
     { value: '+/-', type: 'function', handler: toggleSign },
     { value: '%', type: 'function', handler: percentage },
